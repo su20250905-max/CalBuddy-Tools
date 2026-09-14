@@ -1,0 +1,58 @@
+print("\033[1;31m\tProducts\033[0m")
+produit=["Milk","Baguette","Tomato","Coffe","Salad mix bs","Salad mix ss","Hamburger","Soda mirinda","Chewing gum","Flour 1kg", "Water 1l"]
+for numéro, p in enumerate(produit, start=1):
+    print(f"{numéro}- {p}")
+
+products = [
+{"number": 1, "name": "milk", "price": 4},
+{"number": 2, "name": "baguette", "price": 8},
+{"number": 3, "name": "tomato", "price": 11},
+{"number": 4, "name": "coffe", "price": 30},
+{"number": 5, "name": "salad mix bs", "price": 45.52},
+{"number": 6, "name": "salad mix ss", "price": 31.66},
+{"number": 7, "name": "Hamburger", "price": 19.90},
+{"number": 8, "name": "Soda Mirinda", "price": 5.30},
+{"number": 9, "name": "Chewing Gum", "price": 2.70},
+{"number": 10, "name": "Flour 1kg", "price": 12.00},
+{"number": 11, "name": "Water 1.15L", "price":4.95}
+]
+running = True 
+total = 0
+cart = []
+
+while running:
+    print("\033[31;1m\t_______ Suna Market ______\033[0m")
+    search = int(input("\033[1mEnter your product number: \033[0m"))
+    found = False
+    
+    for product in products:
+        if product["number"] == search:
+            print("\033[1mname:\033[0m",product["name"])
+            print("\033[1mPrice:\033[0m", product["price"], "dh")
+            print("\033[1mStock:\033[0m", product.get("stock", "N/A"))
+            qty = int(input("\033[1mQuantity: \033[0m"))
+            subtotal = product["price"] * qty
+            total += subtotal
+            
+            cart.append({
+                "number": product["number"],
+                "name": product["name"],
+                "qty": qty,
+                "subtotal": subtotal
+                })
+            found = True
+            break
+            
+    if not found:
+        print("Product not found!")
+        
+    choice = input("\033[1;31mDo you want to continue? \n yes\tno\n\033[0m")
+    if choice.lower() == "no":
+        running = False
+        print("\n ...\033[1;30mRECEIPT\033[0m...")
+        for item in cart:
+            print(item["name"], "\tx", item["qty"], "=", item["subtotal"], "dh")
+        print("_________________________")
+        print("\033[1mTOTAL: \033[0m", total, "dh")
+        print("\033[1m\tThank you for your visit!\033[0m")
+
