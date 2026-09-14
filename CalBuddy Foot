@@ -1,0 +1,35 @@
+import matplotlib.pyplot as plt
+
+matches = ["M1","M2","M3","M4","M5"]
+goals = [1, 0, 2, 3, 1]
+passes = [20, 25, 18, 30, 22]
+#les statistiques
+total_goals = sum(goals)
+total_passes = sum(passes)
+
+best_goal_match = matches[goals.index(max(goals))]
+best_pass_match = matches[passes.index(max(passes))]
+
+print("---PLAYER REPORT---")
+print("Total goals: ", total_goals)
+print("Total passes: ", total_passes)
+print("Best match(goals): ", best_goal_match)
+print("Best match(passes): ", best_pass_match)
+
+#les dessins
+plt.figure(figsize=(10,17))
+
+#le 1er dessin:goals. (plot)
+plt.subplot(2,1, 1)
+plt.plot(matches, goals)
+plt.title("Goals", fontsize= 25,  color="red", fontweight= "bold")
+#le 2eme dessin: passes. (Bar)
+plt.subplot(2,1,2)
+plt.bar(matches, passes)
+plt.title("Passes", fontsize= 25, color= "red", fontweight="bold")
+
+plt.tight_layout()
+#plt.savefig("player_report.png")
+plt.show()
+
+
