@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#120062">
+<title>my calcul</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22%22 fill=%22%234a90e2%22 rx=%2220%22/><text y=%22.99em%22 x=%2200%22 font-size=%2299%22>🟰</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ff79b9%22 rx=%2220%22/><text y=%22.8em%22 x=%2210%22 font-size=%2270%22>🔢</text></svg>">
+  <script>
+    window.MathJax = {
+      tex: { packages: ['base', 'ams'] },
+      chtml: { }
+    };
+  </script>
+<script src="tex-mml-chtml.js" async></script>
+<style>
+    body {
+        font-family: Courier New;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background-color: #C1F6FF;
+        }
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background-color: #C1F6FF;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 16px;
+      /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+      z-index: 1000;
+      width: 70px; /*370*/
+    }
+header button {
+      background: none;
+      border: none;
+      color: #120082;
+      font-size: 22px;
+      cursor: pointer;
+      /* إزالة margin-bottom لأنه يسبب تداخل */
+      margin: 0;
+      font-weight: bold;
+    }
+    header button:hover {
+      color: #120082;
+    }
+    h4{
+            font-family: "Courier New", Courier, monospace;
+            text-align: center;
+            text-decoration: underline;
+            color: #120082;
+        }
+    .marquee {
+  width: 190px;
+  color: #120082;
+  white-space: nowrap;
+  box-sizing: border-box;
+  animation: marqueeAnim 10s linear infinite;
+  font-size: 12px;
+  
+  padding: 15px;
+  background: none;
+  margin-top: 1px;
+}
+
+   @keyframes marqueeAnim {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+    .menu-btn {
+            position: fixed;
+            background-color: transparent;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            top: 1px;
+            right: -177px;
+            border-radius: 4px;
+            z-index: 1002;
+            font-size: 20px;
+        }
+        /*computer */
+    @media(min-width: 769px) {
+            header {
+                width: 100%;
+            }
+    .menu-btn {
+     display: block;
+        /* وضع ليناسب شاشة الكمبيوتر */
+     right: -450px;
+     /*المسافة من اليسار أصغر */
+        }
+}
+        
+    .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+    .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    .sidebar {
+            width: 200px;
+            background-color: #08003B;
+            color: white;
+            border-block-color: red;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            right: -250px;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            backdrop-filter: blur(5px);
+        }
+    .sidebar.active {
+            right: 0;
+        }
+    .sidebar a {
+            color: #C1F6FF;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+    .sidebar a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+    main {
+            flex: 1;
+            display: flex;
+            margin-top: 10px;
+        }
+    aside {
+            width: 250px;
+            background-color: #87EFFF;
+            border-left: 1.5px solid #120082;
+            border-right: 1.5px solid #120082;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            margin-right: 3px;
+        }
+    aside button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 100px;
+            cursor: pointer;
+            background-color: #333;
+            border: #333;
+            border-radius: 4px;
+            margin-top: 7px;
+            margin: 2px;
+        }
+    aside button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    #physicsConstants {
+            margin-top: 10px;
+        }
+    #physicsConstants .constant {
+            margin-bottom: 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+    section {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+    .calculator {
+            background-color: rgba(240,248,255,0.9);
+            border-left: 1.5px solid #120082;
+            border-right: 1.5px solid #120082;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 360px;
+            color: #fff;
+            font-family: Courier New;
+            margin-top: 50px;
+        }
+    #inputLine {
+            width: 100%;
+            height: 50px;
+            font-size: 18px;
+            text-align: left;
+            margin-bottom: 0px;
+            padding: 5px 10px;
+            border: 1px solid #000;
+            border-radius: 0;
+            box-sizing: border-box;
+            background-color: #000;
+            color: #fff;
+            font-family:  "Courier New", Courier, monospace;
+        }
+    #inputLine:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    #resultLine {
+            width: 100%;
+            min-height: 40px;
+            font-size: 24px;
+            text-align: right;
+            margin-bottom: 15px;
+            padding: 5px 10px;
+            border-radius: 0;
+            box-sizing: border-box;
+            border: 1px solid #000;
+            background-color: #000;
+            color: #C1F6FF;
+            user-select: none;
+            font-family: "Courier New", Courier, monospace;
+        }
+    .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+    button { /* control all the buttons*/
+            padding: 10px;
+            font-size: 17px;
+            border: 3px solid background-color: rgba(240,248,255,0.9);
+            border-radius: 13px;
+            background-color: #120082;
+            color: #C1F6FF;
+            cursor: not-allowed;
+            transition: background-color 0.3s;
+            user-select: none;
+            width: 100%;
+        }
+    button.enabled {
+            cursor: pointer;
+            background-color: #120082;
+            border-color: #120082;
+            color: #C1F6FF;
+            box-shadow: 0 0 95px #C1F6FF;
+        }
+    button:hover.enabled {
+            background-color: #120082;
+            color: #C1F6FF;
+        }
+    #onButton {
+            background-color: red;
+            color: #C1F6FF;
+            font-size: 16px;
+            padding: 10px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: none;
+            user-select: none;
+            width: 100%;
+            transition: opacity 0.3s;
+            opacity: 1;
+            gap: 2px;
+        }
+    #offButton {
+            background-color: red;
+            color: #C1F6FF;
+            font-size: 16px;
+            cursor: not-allowed;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: none;
+            user-select: none;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            width: 100%;
+        }
+    #offButton.enabled {
+            cursor: pointer;
+            background-color: red;
+            opacity: 1;
+        }
+    #btnScientificCalculator {
+    background-color: red;
+    color: #C1F6FF;
+    font-size: 16px;
+    padding: 8px;
+    cursor: not-allowed;
+    border-radius: 6px;
+    border: none;
+    user-select: none;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+    width: 100%;
+    margin-bottom: 10px;
+}
+    #btnScientificCalculator.enabled {
+    cursor: pointer;
+    opacity: 1;
+    background-color: red;
+}
+    #historyButton {
+            background-color: red;
+            color: #C1F6FF;
+            font-size: 16px;
+            padding: 8px;
+            cursor: not-allowed;
+            border-radius: 6px;
+            border: none;
+            user-select: none;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    #historyButton.enabled {
+            cursor: pointer;
+            opacity: 1;
+            background-color: red;
+        }
+        .button-clear {
+            background-color: #120082;
+            color: #C1F6FF;
+            
+        }
+        .button-clear:hover.enabled {
+            background-color: #120082;
+        }
+        .button-delete {
+            background-color: #120082;
+            color: #C1F6FF;
+        }
+        .button-delete:hover.enabled {
+            background-color: #120082;
+            color: #C1F6FF;
+        }
+    #historyList {
+            max-height: 120px;
+            overflow-y: auto;
+            background: #C1F6FF;
+            color: #120082;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 0;
+            display: none;
+            user-select: none;
+        }
+    #historyList li {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 3px;
+        }
+    #scientificButtons {
+            display: none;
+            margin-top: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            background-color: rgba(240,248,255,0.9);
+        }
+            /* تعديل للهواتف: الحاسبة في الأعلى والثوابت في الأسفل */
+    @media (max-width: 600px) {
+            main {
+                flex-direction: column;
+            }
+            aside {
+                order: 2; /* تظهر في الأسفل */
+                width: 100%;
+                margin-top: 1rem;
+                box-shadow: none;
+                padding: 10px 15px;
+            }
+            section {
+                order: 1; /* تظهر في الأعلى */
+                width: 100%;
+                padding: 10px 15px;
+                display: flex;
+                justify-content: center;
+            }
+            .calculator {
+                width: 100%;
+                max-width: none;
+                box-shadow: none;
+                border-radius: 10px;
+            }
+        }
+</style>
+</head>
+<body>
+  <header>
+ <button onclick="history.back()" style="text-align: left;">↩</button>
+    <div class="marquee" style="margin-top: 3px; ">CalBuddy🤖</div>
+    <button class="menu-btn" onclick="toggleSidebar()" style="color: #120082; font-weight: bold; position:relative;">⋮</button><!--position:absolute;-->
+  </header>
+
+<p style="margin-top: 70px; margin-left: 7px; text-align: justify; color: #120082;">The calculator is here to help you perform mathematical operations, making calculations simpler and faster.
+</p>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()">
+    </div>
+
+    <div class="sidebar" id="sidebar">
+      <ul style="list-style: none; padding: 0;">
+        <li><a href="unitc.html">Unit converter</a></li>
+        <li><a href="games.html">quiz</a></li>
+        <li><a href="cerclemath.html">math</a></li>
+        <li><a href="sitting.html">⚙️ Settings</a></li>
+      </ul>
+    </div>
+<main>
+  <aside>
+   <h4>Physics Constants</h4>
+    <div id="physicsConstants" style="color: #120082; font-family: Courier New, Courier, monospace; font-weight: bold;">
+     <div class="constant" data-value="3e8">⚬ c = 2.99 792 458×10<sup>8</sup> ms<sup>-1</sup></div>
+     <div class="constant" data-value="1.6726e-27">⚬ m<sub>p</sub> = 1.6726×10<sup>-27</sup> kg</div>
+     <div class="constant" data-value="1.6749e-27">⚬ m<sub>n</sub> = 1.6749×10<sup>-27</sup> kg</div>
+     <div class="constant" data-value="9.109e-31">⚬ m<sub>e</sub> = 9.109×10<sup>-31</sup> kg</div>
+     <div class="constant" data-value="1.602176634e-19">⚬ e = 1.602176634 × 10<sup>-19</sup> C</div>
+     <div class="constant" data-value="6.626e-34">⚬ h = 66,626 070 15 × 10<sup>-34</sup> Js</div>
+     <div class="constant" data-value="6.02214076e23">⚬ N<sub>A</sub> = 6.02214076 × 10<sup>23</sup> mol<sup>-1</sup></div>
+     <div class="constant" data-value="1.380649e-23">⚬ k = 1.380649 x 10<sup>–23</sup> JK<sup>-1</sup></div>
+     <div class="constant" data-value="6.67430e-11">⚬ G = 6.67430×10<sup>-11</sup> m<sup>3</sup>kg<sup>-1</sup>s<sup>-2</sup></div>
+     <div class="constant" data-value="3.141592653589793">⚬ &Pi; = 3.141592653589793</div>
+    </div>
+</aside>
+<section>
+ <div class="calculator">
+  <input type="text" id="inputLine" autocomplete="off" disabled />
+    <div id="resultLine"></div>
+    <div class="buttons" id="basicButtons">
+     <button id="historyButton" disabled>History</button>
+     <button id="btnScientificCalculator" disabled>Scientific calculator</button>
+     <button id="offButton" disabled>OFF</button>
+     <button id="onButton">ON</button>
+     <button onclick="appendNumber('1')" disabled>1</button>
+     <button onclick="appendNumber('2')" disabled>2</button>
+     <button onclick="appendNumber('3')" disabled>3</button>
+     <button class="button-clear" onclick="clearDisplay()" disabled>AC</button>
+     <button onclick="appendNumber('4')" disabled>4</button>
+     <button onclick="appendNumber('5')" disabled>5</button>
+     <button onclick="appendNumber('6')" disabled>6</button>
+     <button class="button-delete" onclick="deletePrevious()" disabled>⌫</button>
+     <button onclick="appendNumber('7')" disabled>7</button>
+     <button onclick="appendNumber('8')" disabled>8</button>
+     <button onclick="appendNumber('9')" disabled>9</button>
+     <button onclick="appendOperator('*')" disabled>×</button>
+          <button onclick="appendNumber('.')" disabled>.</button>
+
+     <button onclick="appendNumber('0')" disabled>0</button>
+               <button onclick="appendOperator('-')" disabled>−</button>
+                         <button onclick="appendOperator('+')" disabled>+</button>
+     <button onclick="appendSquare()" disabled>x²</button>
+     <button onclick="appendCube()" disabled>x³</button>
+
+
+     <button onclick="appendOperator('/')" disabled>÷</button>
+
+
+     <button onclick="calculateResult()" disabled>=</button>
+     <button id="percent">%</button>
+     <button onclick="convertToFraction()">↔</button>
+     <button onclick="appendOperator('(')">(</button>
+     <button onclick="appendOperator(')')">)</button>
+ </div>
+ <div class="buttons" id="scientificButtons">
+   <button onclick="appendOperator('^')" disabled>x<sup>n</sup></button>
+   <button onclick="appendFunction('Math.sqrt(')" disabled>√</button>
+   <button onclick="appendNthRoot()" disabled>ⁿ√x</button>
+   <button onclick="appendFunction('Math.log(')" disabled>ln</button>
+   <button onclick="appendFunction('Math.log10(')" disabled>log</button>
+   <button onclick="appendFunction('Math.exp(')" disabled>e<sup>x</sup></button>
+   <button onclick="factorial()">x!</button>
+   <button onclick="appendOperator('C')">nCr</button>
+   <button onclick="appendOperator('P')">nPr</button>
+   <button onclick="appendPi()">π</button>
+   <button onclick="appendFunction('Math.sin(')" disabled>sin</button>
+   <button onclick="appendFunction('Math.cos(')" disabled>cos</button>
+   <button onclick="appendFunction('Math.tan(')" disabled>tan</button>
+   <button onclick="appendFunction('Math.asin(')" disabled>sin⁻¹</button>
+   <button onclick="appendFunction('Math.acos(')" disabled>cos⁻¹</button>
+   <button onclick="appendFunction('Math.atan(')" disabled>tan⁻¹</button>
+   <!--<button id="btnPow2" onclick="appendSquare()" class="">x²</button>-->
+ </div>
+<ul id="historyList"></ul>
+<!--</div>-->
+</section>
+</main>
+    <p>CalBuddy, Copyright &copy; 2026</p>
+<script>
+//function append pi
+function appendPi() {
+  document.getElementById('display').value += Math.PI;
+}
+  document.querySelectorAll('#physicsConstants .constant').forEach(elem => {
+  elem.style.cursor = 'pointer';  
+  elem.addEventListener('click', () => {
+    if (inputLine.disabled) return;
+    const val = elem.getAttribute('data-value');
+    inputLine.value += val;
+    inputLine.focus();
+  });
+});
+// function toggle 
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+    document.getElementById("overlay").classList.toggle("active");
+}
+const onButton = document.getElementById('onButton');
+const offButton = document.getElementById('offButton');
+const historyButton = document.getElementById('historyButton');
+const inputLine = document.getElementById('inputLine');
+const resultLine = document.getElementById('resultLine');
+const buttons = document.querySelectorAll('.buttons button:not(#onButton):not(#offButton):not(#historyButton)');
+const historyList = document.getElementById('historyList');
+const percentButton = document.getElementById('percent');
+
+percentButton.addEventListener('click', () => {
+    const input = document.getElementById('inputLine');
+    try {
+        let current = eval(input.value);
+        let percentValue = current / 100;
+        input.value = percentValue;
+        input.focus();
+    } catch {
+        resultLine.textContent = 'Error';
+    }
+});
+
+const btnScientificCalculator = document.getElementById('btnScientificCalculator');
+const scientificButtons = document.getElementById('scientificButtons');
+
+const btnPhysicsConstants = document.getElementById('btnPhysicsConstants');
+const btnUnitConverter = document.getElementById('btnUnitConverter');
+
+let history = [];
+let historyVisible = false;
+let scientificVisible = false;
+// function disable Calculator
+function disableCalculator() {
+    inputLine.disabled = true;
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.remove('enabled');
+    });
+    offButton.disabled = true;
+    offButton.classList.remove('enabled');
+    historyButton.disabled = true;
+    historyButton.classList.remove('enabled');
+    btnPhysicsConstants.disabled = true;
+    btnUnitConverter.disabled = true;
+    btnScientificCalculator.disabled = false;
+    scientificButtons.style.display = 'none';
+    scientificVisible = false;
+    historyList.style.display = 'none';
+    historyVisible = false;
+    resultLine.textContent = '';
+    inputLine.value = '';
+}
+// function enable Calculator
+function enableCalculator() {
+    inputLine.disabled = false;
+    buttons.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.add('enabled');
+    });
+    offButton.disabled = false;
+    offButton.classList.add('enabled');
+    historyButton.disabled = false;
+    historyButton.classList.add('enabled');
+    btnPhysicsConstants.disabled = false;
+    btnUnitConverter.disabled = false;
+}
+
+onButton.addEventListener('click', () => {
+    enableCalculator();
+    onButton.disabled = true;
+    onButton.style.opacity = 0.6;
+});
+
+offButton.addEventListener('click', () => {
+    disableCalculator();
+    onButton.disabled = false;
+    onButton.style.opacity = 1;
+});
+
+historyButton.addEventListener('click', () => {
+    historyVisible = !historyVisible;
+    historyList.style.display = historyVisible ? 'block' : 'none';
+    historyButton.textContent = historyVisible ? 'Hide History' : 'Show History';
+});
+
+btnScientificCalculator.addEventListener('click', () => {
+    scientificVisible = !scientificVisible;
+    scientificButtons.style.display = scientificVisible ? 'grid' : 'none';
+    btnScientificCalculator.textContent = scientificVisible ? 'Hide Scientific' : 'Scientific Calculator';
+
+    buttons.forEach(btn => {
+        if (scientificVisible) {
+            btn.disabled = false;
+            btn.classList.add('enabled');
+        }
+    });
+});
+
+btnPhysicsConstants.addEventListener('click', () => {
+    alert('Physics constants are displayed in the textarea on the left.');
+});
+
+btnUnitConverter.addEventListener('click', () => {
+    alert('Unit converter functionality not implemented yet.');
+});
+// function up date History List
+function updateHistoryList() {
+    historyList.innerHTML = '';
+    if (history.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No previous calculations.';
+        historyList.appendChild(li);
+        return;
+    }
+    history.slice().reverse().forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.expression} = ${entry.result}`;
+        historyList.appendChild(li);
+    });
+}
+// function append Number
+function appendNumber(number) {
+    inputLine.value += number;
+    inputLine.focus();
+}
+// function append Square
+/*function appendSquare() {
+    const inputLine = document.getElementById('inputLine');
+    if (inputLine.disabled) return; // لو الآلة مطفأة
+
+    // إضافة الأس 2 مباشرة
+    inputLine.value += "**2";   // يدعمه eval() في الحساب
+}
+
+function appendCube() {
+    const inputLine = document.getElementById('inputLine');
+    if (inputLine.disabled) return; // إذا كانت الآلة مطفأة
+
+    // إضافة الأس 3 مباشرة
+    inputLine.value += "**3";   // صالح مع eval()
+}*/
+// function append Operator
+function appendOperator(operator) {
+    const lastChar = inputLine.value.slice(-1);
+    if ('+-*/^'.includes(lastChar)) {
+        inputLine.value = inputLine.value.slice(0, -1) + operator;
+    } else if (inputLine.value !== '') {
+        inputLine.value += operator;
+    }
+    inputLine.focus();
+}
+// function append function
+function appendFunction(func) {
+    inputLine.value += func;
+    inputLine.focus();
+}
+// function to Radians
+function toRadians(deg) {
+    return deg * Math.PI / 180;
+}
+// function append Pi
+function appendPi() {
+    const input = document.getElementById('inputLine');
+    const lastChar = input.value.slice(-1);
+    if (/\d|\)/.test(lastChar)) {
+        input.value += '*' + Math.PI;
+    } else {
+        input.value += Math.PI;
+    }
+}
+// function factorial
+function factorial() {
+    const input = document.getElementById('inputLine');
+    try {
+        let n = eval(input.value);
+        if (!Number.isInteger(n) || n < 0) {
+            resultLine.textContent = 'Error';
+            return;
+        }
+        let res = 1;
+        for (let i = 2; i <= n; i++) {
+            res *= i;
+        }
+        input.value = res;
+        input.focus();
+    } catch {
+        resultLine.textContent = 'Error';
+    }
+}
+// function factorial Value
+function factorialValue(n) {
+    let result = 1;
+    for (let i = 2; i <= n; i++) result *= i;
+    return result;
+}
+// function nCr
+function nCr(n, r) {
+    if (r > n || n < 0 || r < 0) return "Error";
+    return factorialValue(n) / (factorialValue(r) * factorialValue(n - r));
+}
+// function nPr
+function nPr(n, r) {
+    if (r > n || n < 0 || r < 0) return "Error";
+    return factorialValue(n) / factorialValue(n - r);
+}
+// function appendSquare 
+function appendSquare() {
+  const display = document.getElementById('inputLine');
+  display.value += '^2';
+}
+// function appendCube
+function appendCube() {
+  const display = document.getElementById('inputLine');
+  display.value += '^3';   // أو ^3 حسب نظام حسابك
+}
+// =============================
+//   ★★ إضافة زر x^2 هنا ★★
+// =============================
+// function append Square
+
+// =============================
+function appendNthRoot() {
+    const display = document.getElementById('inputLine');
+    display.value += "√(n,x)";  
+    // وضع المؤشر بين القيمتين تلقائياً لاحقاً (اختياري)
+}
+//function calculate Result
+function calculateResult() {
+    try {
+        let expr = inputLine.value;
+
+        expr = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+        expr = expr.replace(/\^/g, '**');
+
+        const openParens = (expr.match(//g) || []).length;
+        const closeParens = (expr.match(//g) || []).length;
+        if (openParens > closeParens) {
+            expr += ')'.repeat(openParens - closeParens);
+        }
+// ----- معالجة nCr و nPr -----
+expr = expr.replace(/(\d+)\s*C\s*(\d+)/g, "nCr($1,$2)");
+expr = expr.replace(/(\d+)\s*P\s*(\d+)/g, "nPr($1,$2)");
+// تحويل √(n,x) إلى Math.pow(x, 1/n)
+expr = expr.replace(/√\(\s*(\d+)\s*,\s*([\d\.]+)\s*\)/g, "Math.pow($2, 1/$1)");
+        const result = eval(expr);
+
+        if (result === undefined || Number.isNaN(result)) {
+            resultLine.textContent = 'Error';
+        } else {
+            resultLine.textContent = result;
+            history.push({ expression: inputLine.value, result });
+            updateHistoryList();
+        }
+    } catch (e) {
+        resultLine.textContent = 'Error in expression';
+    }
+}
+// function clear display
+function clearDisplay() {
+    inputLine.value = '';
+    resultLine.textContent = '';
+    inputLine.focus();
+}
+// function delete Previous
+function deletePrevious() {
+    const pos = inputLine.selectionStart;
+    if (pos === 0) {
+        alert('Cursor at start, nothing to delete');
+        return;
+    }
+    const before = inputLine.value.slice(0, pos - 1);
+    const after = inputLine.value.slice(pos);
+    inputLine.value = before + after;
+    inputLine.selectionStart = inputLine.selectionEnd = pos - 1;
+    inputLine.focus();
+}
+// function gcd(a, b)
+function gcd(a, b) {
+    if (!b) return a;
+    return gcd(b, a % b);
+}
+// function convert To Fraction
+function convertToFraction() {
+    const resultElement = document.getElementById("resultLine");
+    let value = resultElement.innerText || resultElement.textContent;
+
+    if (!value) return; // لا شيء للتحويل
+
+    let number = parseFloat(value);
+
+    if (isNaN(number)) return;
+
+    // إذا كان كسرًا بالفعل، أرجعيه للعدد العشري
+    if (value.includes("/")) {
+        try {
+            const [num, den] = value.split("/");
+            resultElement.innerText = (parseFloat(num) / parseFloat(den)).toString();
+        } catch {
+            return;
+        }
+        return;
+    }
+
+    // تحويل عدد عشري إلى كسر
+    let decimal = number % 1;
+
+    if (decimal === 0) return;  // ليس عدداً عشرياً
+
+    let denominator = 1000000;
+    let numerator = Math.round(number * denominator);
+
+    // تبسيط الكسر
+    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+
+    let g = gcd(Math.abs(numerator), denominator);
+
+    numerator /= g;
+    denominator /= g;
+
+    resultElement.innerText = `${numerator}/${denominator}`;
+}
+
+document.getElementById('fractionBtn').addEventListener('click', convertToFraction);
+
+disableCalculator();
+</script>
+</body>
+</html>
